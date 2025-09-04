@@ -15,7 +15,7 @@ typedef struct node {
 
 
 //head of the linked list 
-node * head; 
+node * head = NULL; 
 
 
 //function prototypes
@@ -51,14 +51,13 @@ node * insertNode(node * head, char * data){
 		return head; 
 	}
 	
-	else{
 		node * newnode = createNode(data); 
 			node * temp = head; 
 		while(temp -> next != NULL){
 			temp = temp-> next;  
 		}
-		temp = newnode; 
-	}
+		temp ->next = newnode; 
+	
 	return head; 	
 }
 
@@ -69,10 +68,17 @@ node * deleteNode(node * head, char * data){
 		return head;
 	}
 
+	if(strcmp(head->data, data) == 0){
+		//head swap 
+	 head -> next = head; 
+		
+		return head;
+	}
+
 	else{
 		node * temp = head; 
 
-		while(temp != NULL && temp -> data != data){
+		while(temp != NULL && strcmp(data, temp->data) != 0){
 			temp = temp -> next; 
 		}
 
@@ -83,8 +89,14 @@ node * deleteNode(node * head, char * data){
 	}
 }
 
+
+
+
 //returns 0 if the value is included in the list and 1 if not 
 int isIN(node * head, char * data){
+	if(head == NULL){
+		return 2;
+	}
 	node * temp = head; 
 	while(temp != NULL){
 		if(strcmp(temp-> data, data) == 0){
@@ -127,36 +139,46 @@ char ** getVals(node * head){
 }
 
 void PrintList(node * head){
-
+	//remember that when you concat that it breaks the length of the stack allocated strings	
 	char arrow[] = "->"; 
 	char  marker1[] = "(head)";
 	char  marker2[] = "NULL";
 	char ** vals = getVals(head);
 	int num = getNum(head); 
-
+	size_t len1 = strlen(arrow) + strlen(marker1);
+	size_t len2 = strlen(arrow) + strlen(marker2);   
 	char ** printable = malloc (sizeof(char*) * num); 
 
 	for(int i = 0; i < num; i ++){
 	
-	if(i == 0){
-		printable[i] = malloc(sizeof(char) * strlen(vals[i]) + 15);
-		strcat(marker1, vals[i]);
-		strcat(marker1, arrow);
-		strcpy(printable[i], marker1);	
-	}
-	else if(i == num - 1){
-		printable[i] = malloc(sizeof(char) * strlen(vals[i]) + 15);
-		strcat(vals[i], marker2);
-		strcat(vals[i], arrow); 
-		strcpy(printable[i], vals[i]);			
-	}
-	else{
-
-		printable[i] = malloc(sizeof(char) * strlen(vals[i]) + 7);
+		if(i == 0){ 
+		printable[i] = malloc(sizeof(char) * strlen(vals[i]) + 1 + len1 + 1); 
 		strcpy(printable[i], vals[i]);
+		strcat(printable[i], marker1);
 		strcat(printable[i], arrow);
-		}
-	}
+		printf("%s", printable[i]);
+		   }
+		
+		
+	 	else if(i == num - 1){
+	 		printable[i] = malloc(sizeof(char) * strlen(vals[i]) + 1 + len2 + 1);
+			strcpy(printable[i],vals[i]);
+			strcat(printable[i], arrow);
+			strcat(printable[i], marker2);
+			printf("%s", printable[i]);
+
+	 					
+	 		}
+	 		
+	 	else{
+	 
+			printable[i] = malloc(sizeof(char) * strlen(vals[i]) + 1 + strlen(arrow) + 1);
+			strcpy(printable[i], vals[i]);
+			strcat(printable[i], arrow);
+			printf("%s", printable[i]);
+	 			 		}
+	 			 		}
+		
 	for(int i = 0; i < num; i ++){
 		printf("%s", printable[i]);
 		free(printable[i]);
@@ -165,12 +187,14 @@ void PrintList(node * head){
 	free(printable);
 		
 
-	} 
+	
 
 
-
+}
 
 int main (){
+
+/*
 bool status = true; 
 printf("Options:\n 1 - print current list\n2 - Add to nodes to the list\n 3 - delete nodes from the list\n4 - Check if a value is in the list without printing\n");
 
@@ -190,34 +214,55 @@ printf("Options:\n 1 - print current list\n2 - Add to nodes to the list\n 3 - de
 			char *  data = malloc(sizeof(char) * 20); 
 			scanf("%s", data);
 			insertNode(head, data);
-			printf("Alright! \n"); 
+			printf("Alright! \n");
+			int count = getNum(head);
+			printf("%d", count);
 			break;
 
 		case 3:
-			printf("Enter the value you want to delete");
+			printf("Enter the value you want to delete:\n");
 			char * value = malloc(sizeof(char) * 20);
 			scanf("%c", value);
-			if(isIN(head, value) ==0){
-				deleteNode(head, value);
-				printf("it is done...");
+			if ((isIN(head, value) == 2)){
+			printf("The list is empty dawg...\n");
+			break;	
 			}
 			else if(isIN(head, value) == 1){
 				printf("ts is not in the list gang");
+			break;
+			}
+			else if(isIN(head, value) == 0){
+				deleteNode(head, value);
+				printf("it is done...");
+			break;
 			}
 			break;
 		case 4:
 			printf("You could have just printed gang; Enter the value:");
 			char * check = malloc(sizeof(char) * 20);
 			scanf("%s", check);
-			if(isIN(head, check) == 1){
-				printf("Yeah it is not here");
+			if(isIN(head, check) == 2){
+				printf("Yeah it is not here, the list is empty");
 							}
-							else{
+							else if(isIN(head,check) == 1){ printf("Not in the list"); }
+							else if(isIN(head, check) == 0){
 								printf("Yeah its here");
 							}
 			break;
 	}
 }
+
+*/
+
+
+
+char data[] = "hello";
+
+insertNode(head, data); 
+int count = getNum(head);
+			printf("%d", count);
+
+PrintList(head);
 	return 0;
 
 }
